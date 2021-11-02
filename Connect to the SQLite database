@@ -1,3 +1,6 @@
+//Connect to the SQLite database
+
+
 package net.sqlitedatabase;
 
 import java.sql.Connection;
@@ -33,3 +36,172 @@ public class Connect {
         connect();
     }
 }
+
+
+//Creating a new SQLite database
+
+import java.sql.Connection;  
+import java.sql.DatabaseMetaData;  
+import java.sql.DriverManager;  
+import java.sql.SQLException;  
+   
+public class Create {  
+  
+    public static void createNewDatabase(String fileName) {  
+   
+        String url = "jdbc:sqlite:C:/sqlite/" + fileName;  
+   
+        try {  
+            Connection conn = DriverManager.getConnection(url);  
+            if (conn != null) {  
+                DatabaseMetaData meta = conn.getMetaData();  
+                System.out.println("The driver name is " + meta.getDriverName());  
+                System.out.println("A new database has been created.");  
+            }  
+   
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+    }  
+  
+    public static void main(String[] args) {  
+        createNewDatabase("SQLITEDATABASE.db");  
+    }  
+}  
+
+
+//Creating a new table (Movies)
+
+import java.sql.Connection;  
+import java.sql.DriverManager;  
+import java.sql.SQLException;  
+import java.sql.Statement;  
+   
+public class CreateTable {  
+   
+    public static void createNewTable() {  
+        // SQLite connection string  
+        String url = "jdbc:sqlite:C://sqlite/SQLITEDATABASE.db";  
+          
+        // SQL statement for creating a new table  
+        String sql = "CREATE TABLE IF NOT EXISTS Movies (\n"  
+                + " id integer PRIMARY KEY,\n"  
+                + " name text NOT NULL,\n"  
+                + " capacity real\n"  
+                + ");";  
+          
+        try{  
+            Connection conn = DriverManager.getConnection(url);  
+            Statement stmt = conn.createStatement();  
+            stmt.execute(sql);  
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+    }  
+   
+    /** 
+     * @param args the command line arguments 
+     */  
+    public static void main(String[] args) {  
+        createNewTable();  
+    }  
+   
+}  
+
+
+//Inserting data into Movies table
+
+import java.sql.Connection;  
+import java.sql.DriverManager;  
+import java.sql.PreparedStatement;  
+import java.sql.SQLException;  
+   
+public class InsertRecords {  
+   
+    private Connection connect() {  
+        // SQLite connection string  
+        String url = "jdbc:sqlite:C://sqlite/SQLITEDATABASE.db";  
+        Connection conn = null;  
+        try {  
+            conn = DriverManager.getConnection(url);  
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+        return conn;  
+    }  
+   
+  
+    public void insert(String name, double capacity) {  
+        String sql = "INSERT INTO Movies(moviename, actor, actress, director, year of release) VALUES(?,?)";  
+   
+        try{  
+            Connection conn = this.connect();  
+            PreparedStatement pstmt = conn.prepareStatement(sql);  
+            pstmt.setString(1, moviename);
+            pstmt.setString(2, actor);
+            pstmt.setString(3, actress);
+            pstmt.setString(4, director);            
+            pstmt.setDouble(5, year of release);  
+            pstmt.executeUpdate();  
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+    }  
+   
+    public static void main(String[] args) {  
+   
+        InsertRecords app = new InsertRecords();  
+        // insert three new rows  
+        app.insert("sarileru neekevvaru", "mahesh babu", "rashmika mandanna", "anil ravipudi", 2020);  
+        app.insert("maharshi", "mahesh babu", "pooja hegde", "vamshi paidipally", 2019); 
+    }  
+   
+}  
+
+//Querying data from Movies table
+
+import java.sql.DriverManager;  
+import java.sql.Connection;  
+import java.sql.ResultSet;  
+import java.sql.SQLException;  
+import java.sql.Statement;  
+   
+public class SelectRecords {  
+   
+    private Connection connect() {  
+          
+        String url = "jdbc:sqlite:C://sqlite/SQLITEDATABASE.db";  
+        Connection conn = null;  
+        try {  
+            conn = DriverManager.getConnection(url);  
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+        return conn;  
+    }  
+   
+  
+    public void selectAll(){  
+        String sql = "SELECT * FROM Movies";  
+          
+        try {  
+            Connection conn = this.connect();  
+            Statement stmt  = conn.createStatement();  
+            ResultSet rs    = stmt.executeQuery(sql);  
+              
+            while (rs.next()) {  
+                System.out.println(rs.getInt("id") +  "\t" +   
+                                   rs.getString("moviename") + "\t" +  
+                                   rs.getDouble("actor"));  
+            }  
+        } catch (SQLException e) {  
+            System.out.println(e.getMessage());  
+        }  
+    }  
+     
+    public static void main(String[] args) {  
+        SelectRecords app = new SelectRecords();  
+        app.selectAll();  
+    }  
+   
+} 
